@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Solo se usa para el fondo de la ventana nativa antes de que Compose
+         tome el control (evita el flash blanco al abrir la app). La paleta
+         real vive en Kotlin: core/designsystem/Color.kt -->
+    <color name="window_background_light">#FBF8F3</color>
+    <color name="window_background_dark">#1E1C1A</color>
+</resources>

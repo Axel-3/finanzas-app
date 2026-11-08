@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Marca temporal: tres barras ascendentes (crecimiento financiero),
+     dentro de la zona segura de 72x72dp sobre un viewport de 108x108dp.
+     Reemplazable más adelante por un ícono final sin tocar el background. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:pathData="M34,64 L46,64 L46,76 L34,76 Z"
+        android:fillColor="#FBF8F3" />
+    <path
+        android:pathData="M49,50 L61,50 L61,76 L49,76 Z"
+        android:fillColor="#FBF8F3" />
+    <path
+        android:pathData="M64,36 L76,36 L76,76 L64,76 Z"
+        android:fillColor="#FBF8F3" />
+</vector>

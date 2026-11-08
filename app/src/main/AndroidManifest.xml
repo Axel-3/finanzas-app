@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Para que la pantalla de "Reglas de notificaciones" pueda listar las
+         apps instaladas con ícono de lanzador (bancos incluidos) sin pedir
+         el permiso amplio QUERY_ALL_PACKAGES. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
+
+    <application
+        android:name=".FinanzasApp"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Finanzas">
+        <!-- allowBackup=false a propósito: el respaldo de esta app es manual
+             y cifrado (Fase 6), nunca el backup automático de Android/Google. -->
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Finanzas"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Widget de captura rápida: registrar un gasto/ingreso en
+             efectivo sin abrir la app completa. -->
+        <activity
+            android:name=".widget.QuickAddActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.Finanzas.Dialog"
+            android:windowSoftInputMode="adjustResize" />
+
+        <receiver
+            android:name=".widget.FinanzasWidgetReceiver"
+            android:exported="false"
+            android:label="@string/widget_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/finanzas_widget_info" />
+        </receiver>
+
+        <!-- Lee notificaciones SOLO de las apps elegidas en "Más -> Reglas
+             de notificaciones". Requiere activar el permiso especial
+             "Acceso a notificaciones" en Ajustes del sistema (no se puede
+             pedir con un diálogo normal). -->
+        <service
+            android:name=".core.notifications.FinanzasNotificationListenerService"
+            android:exported="true"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
+        <!-- FinanzasApp ya implementa Configuration.Provider con
+             HiltWorkerFactory (ver FinanzasApp.kt); hay que apagar el
+             inicializador automático de WorkManager o se pisan entre sí. -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
+
+        <!-- Fase 6: compartir el CSV exportado y los respaldos cifrados
+             sin pedir permisos de almacenamiento. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+    </application>
+
+</manifest>
